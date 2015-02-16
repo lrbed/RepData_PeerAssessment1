@@ -13,7 +13,7 @@ output:
 	
 ```{r echo=TRUE}
 	unzip("repdata-data-activity.zip")
-	Data <- read.csv("activity.csv")
+	Data <- read.csv("C:\\Users\\Kawthar\\Documents\\Data Science\\Reproducible Research\\Week 2\\project\\activity.csv")
 	Data$date <- as.Date(Data$date, "%Y-%m-%d")
 ```
 
@@ -25,7 +25,7 @@ output:
 	AGG_DATA <- aggregate(steps ~ date, data=Data, FUN=sum, na.rm=TRUE)
 ```
 2. Plot the histogram
-```{r fig.width=5 echo=TRUE}
+```{r fig.width=15, echo=TRUE}
 	hist(AGG_DATA$steps)
 ```
 3. Calculate Mean and Median
@@ -60,7 +60,6 @@ output:
 	COUNT_NA <- sum(is.na(Data$steps))
 	COUNT_NA
 	
-	strategy (not clear)!
 	Data_2 <- Data
 	Data_2$steps[is.na(Data_2$steps)] <- 0
 	hist(Data_2$steps)
