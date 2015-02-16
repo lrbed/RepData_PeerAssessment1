@@ -7,19 +7,90 @@ output:
 
 
 ## Loading and preprocessing the data
-
+	1. Unzip the compressed file
+	2. Load the CSV file
+	3. Convert Date column to Date format
+	
+```{r echo=TRUE}
+	unzip("repdata-data-activity.zip")
+	Data <- read.csv("activity.csv")
+	Data$date <- as.Date(Data$date, "%Y-%m-%d")
+```
 
 
 ## What is mean total number of steps taken per day?
 
+1. Aggregate the data on interesting variables and calculate the mean
+```{r echo=TRUE}
+	AGG_DATA <- aggregate(steps ~ date, data=Data, FUN=sum, na.rm=TRUE)
+```
+2. Plot the histogram
+```{r fig.width=5 echo=TRUE}
+	hist(AGG_DATA$steps)
+```
+3. Calculate Mean and Median
 
+
+```{r echo=TRUE}
+	MEAN <- mean(AGG_DATA$steps, na.rm=FALSE)
+	MEDIAN <- median(AGG_DATA$steps, na.rm=FALSE)
+```
+
+```{r echo=FALSE}
+	MEAN <- mean(AGG_DATA$steps, na.rm=FALSE)
+	MEDIAN <- median(AGG_DATA$steps, na.rm=FALSE)
+```
 
 ## What is the average daily activity pattern?
 
+1. Calculate mean value 
+```{r echo=FALSE}
+	AGG_DATA_MEAN <- aggregate(steps ~ interval, data=Data, FUN=mean, na.rm=TRUE)
+	plot(AGG_DATA_MEAN$interval, AGG_DATA_MEAN$steps, type="l")
 
+
+	MEAN_MAX <- which.max(AGG_DATA_MEAN$steps)
+	AGG_DATA_MEAN$interval[MEAN_MAX]
+```
 
 ## Imputing missing values
 
+```{r echo=FALSE}
 
+	COUNT_NA <- sum(is.na(Data$steps))
+	COUNT_NA
+	
+	strategy (not clear)!
+	Data_2 <- Data
+	Data_2$steps[is.na(Data_2$steps)] <- 0
+	hist(Data_2$steps)
+```
 
+```{r echo=TRUE}
+
+	COUNT_NA <- sum(is.na(Data$steps))
+	COUNT_NA
+	
+	strategy (not clear)!
+	Data_2 <- Data
+	Data_2$steps[is.na(Data_2$steps)] <- 0
+	hist(Data_2$steps)
+```
 ## Are there differences in activity patterns between weekdays and weekends?
+
+```{r echo=FALSE}
+
+	Data$DayType <- as.factor(ifelse(weekdays(Data$date) %in% c("Saturday","Sunday"),"weekend", "weekday"))
+	WEEKDAY_DATA <- Data[Data$DayType=="weekday" , ]
+	AGG_DATA_WEEKDAY <- aggregate(steps ~ interval, data=WEEKDAY_DATA, FUN=sum, na.rm=TRUE)
+	
+	WEEKENDDAY_DATA <- Data[Data$DayType=="weekend" , ]
+	AGG_DATA_WEEKENDDAY <- aggregate(steps ~ interval, data=WEEKENDDAY_DATA, FUN=sum, na.rm=TRUE)
+```
+
+```{r echo=TRUE}
+
+	par(mfrow=c(1,2))
+	plot(AGG_DATA_WEEKDAY$interval, AGG_DATA_WEEKDAY$steps, type="l")
+	plot(AGG_DATA_WEEKENDDAY$interval, AGG_DATA_WEEKENDDAY$steps, type="l")
+```
